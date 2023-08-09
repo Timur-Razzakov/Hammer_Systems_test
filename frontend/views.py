@@ -22,7 +22,7 @@ def home_view(request):
     form = UserForm(request.POST or None)
     # Получение CSRF-токена из кук
     csrf_token = request.COOKIES['csrftoken']
-    # Определение заголовков запроса с CSRF-токеном
+    # Определение заголовков запроса с CSRF-токен
     headers = {
         'X-CSRFToken': csrf_token,
     }
