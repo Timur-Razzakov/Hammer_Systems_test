@@ -83,6 +83,6 @@ class ReferralAPIView(APIView):
                 return Response({"detail": "Вы уже активировали 'invite_code' "})
             referral = Referral.objects.create(user=user, referral=referral_user)
             referral.save()
-            return Response({"detail": "Save successful."}, status=status.HTTP_200_OK)
+            return Response({"detail": "Save successful."})
         else:
             return Response({"detail": "Такого 'invite_code' кода не существует"})
