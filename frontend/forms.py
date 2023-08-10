@@ -23,7 +23,6 @@ class InviteCodeForm(forms.ModelForm):
             'phone_number': 'Введите код активации:',
         }
 
-
 class UserForm(forms.Form):
     invite_code = forms.CharField(
         max_length=6,

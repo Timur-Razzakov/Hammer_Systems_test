@@ -27,7 +27,7 @@ class RegistrationView(APIView):
             # Имитация отправки кода авторизации (1-2 сек задержка)
             send_message()
             return Response({"auth_code": activate_code},
-                            status=status.HTTP_200_OK)
+                            status=status.HTTP_201_CREATED)
         return Response(phone_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,7 +46,8 @@ class VerifyCode(APIView):
                 user_profile.save()
                 # авторизуемся
                 login(request, user_profile)
-                response = Response({"phone_number": phone_number, "activate_code": verification_code},
+                response = Response({"phone_number": phone_number,
+                                     "activate_code": verification_code},
                                     status=status.HTTP_200_OK)
                 # устанавливаем set_cookie в ответ
                 response.set_cookie('sessionid', request.session.session_key)
@@ -77,12 +78,15 @@ class ReferralAPIView(APIView):
             # ищем владельца invite_code-да
             referral_user = get_object_or_404(User, invite_code=invite_code)
             if referral_user.pk == user.pk:
-                return Response({"detail": "Вы не можете активировать свой 'invite_code' "})
+                return Response({"detail": "Вы не можете активировать свой 'invite_code'"},
+                                status=status.HTTP_400_BAD_REQUEST)
             check_invite = Referral.objects.filter(user=user.pk).first()
             if check_invite:
-                return Response({"detail": "Вы уже активировали 'invite_code' "})
+                return Response({"detail": "Вы уже активировали 'invite_code'"},
+                                status=status.HTTP_400_BAD_REQUEST)
             referral = Referral.objects.create(user=user, referral=referral_user)
             referral.save()
-            return Response({"detail": "Save successful."})
+            return Response({"detail": "Save successful."}, status=status.HTTP_200_OK)
         else:
-            return Response({"detail": "Такого 'invite_code' кода не существует"})
+            return Response({"detail": "Такого 'invite_code' кода не существует"},
+                            status=status.HTTP_400_BAD_REQUEST)
