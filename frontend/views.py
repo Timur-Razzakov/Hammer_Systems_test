@@ -20,6 +20,7 @@ def logout_view(request):
 
 def home_view(request):
     form = UserForm(request.POST or None)
+    user = request.user
     # Получение CSRF-токена из кук
     csrf_token = request.COOKIES['csrftoken']
     # Определение заголовков запроса с CSRF-токен
@@ -35,7 +36,7 @@ def home_view(request):
         detail = json_response.get('detail', '')
         messages.success(request, detail)
 
-    return render(request, 'home.html', {'form': form})
+    return render(request, 'home.html', {'form': form, 'invite_code': user.invite_code})
 
 
 # cookies=request.COOKIES
@@ -48,7 +49,7 @@ def registration_view(request):
         response = requests.post(
             url=f"{api_url}registration/",
             data=data, )
-        if response.status_code == 200:
+        if response.status_code == 201:
             json_response = response.json()
             code_value = json_response.get('auth_code', '')
             return redirect('frontend:verify_code', code=code_value)

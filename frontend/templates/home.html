@@ -21,6 +21,7 @@
                 Форма для добавления
             </p>
 
+            <p>Ваш invite_code: {{ invite_code }}</p>
             <form method="POST" action="#">
                 <div class="form-group">
                     {{ form.as_p }}{% csrf_token %}
